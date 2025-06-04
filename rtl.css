@@ -1,0 +1,100 @@
+/*
+Multi Maiven RTL Styles
+Right-to-left language support
+*/
+
+/* General RTL Adjustments */
+body.rtl {
+    direction: rtl;
+    text-align: right;
+}
+
+/* Header RTL */
+.rtl .header-container {
+    direction: rtl;
+}
+
+.rtl .site-branding {
+    text-align: right;
+}
+
+.rtl .main-navigation ul {
+    direction: rtl;
+}
+
+.rtl .main-navigation li {
+    margin: 0 0 0 1rem;
+}
+
+/* Content RTL */
+.rtl .content-area {
+    direction: rtl;
+}
+
+.rtl .has-sidebar .content-area {
+    grid-template-columns: 1fr 2fr;
+}
+
+.rtl .entry-meta {
+    text-align: right;
+}
+
+/* Navigation RTL */
+.rtl .post-navigation .nav-previous {
+    float: right;
+}
+
+.rtl .post-navigation .nav-next {
+    float: left;
+}
+
+/* Comments RTL */
+.rtl .comment-list {
+    direction: rtl;
+}
+
+.rtl .comment-meta {
+    text-align: right;
+}
+
+/* Forms RTL */
+.rtl .search-form-container {
+    direction: rtl;
+}
+
+.rtl .search-field {
+    padding-right: 0.75rem;
+    padding-left: 3rem;
+}
+
+.rtl .search-submit {
+    left: 0;
+    right: auto;
+}
+
+/* Widget RTL */
+.rtl .widget {
+    text-align: right;
+}
+
+.rtl .widget ul {
+    direction: rtl;
+}
+
+/* Footer RTL */
+.rtl .site-footer {
+    direction: rtl;
+    text-align: right;
+}
+
+/* Mobile Menu RTL */
+@media (max-width: 768px) {
+    .rtl .menu-toggle {
+        float: left;
+    }
+    
+    .rtl .main-navigation ul {
+        direction: rtl;
+        text-align: right;
+    }
+}
