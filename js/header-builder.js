@@ -117,10 +117,6 @@
                         $headerContainer.css('flex-direction', 'column');
                         $siteBranding.css('margin-bottom', '1rem');
                         break;
-                    case 'left_aligned':
-                        $headerContainer.css('justify-content', 'flex-start');
-                        $mainNavigation.css('margin-left', '2rem');
-                        break;
                     case 'split':
                         // Split layout implementation would go here
                         break;
@@ -190,12 +186,6 @@
                     styles = {
                         'justify-content': 'center',
                         'text-align': 'center'
-                    };
-                    break;
-                case 'right':
-                    styles = {
-                        'justify-content': 'flex-end',
-                        'text-align': 'right'
                     };
                     break;
             }

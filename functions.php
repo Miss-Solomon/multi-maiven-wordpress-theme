@@ -36,6 +36,7 @@ function mm_setup() {
         array(
             'menu-1' => esc_html__('Primary', 'multi-maiven'),
             'footer-menu' => esc_html__('Footer Menu', 'multi-maiven'),
+            'header-left' => esc_html__('Header Left', 'multi-maiven'), // New left header menu
         )
     );
 
@@ -329,3 +330,34 @@ function mm_add_editor_color_palette() {
     ));
 }
 add_action('after_setup_theme', 'mm_add_editor_color_palette');
+
+/**
+ * Add Advertising controls to the Customizer (Header and Footer Ads)
+ */
+function mm_customize_advertising_register( $wp_customize ) {
+    $wp_customize->add_section( 'header_ad_section', array(
+        'title'    => __( 'Advertisements', 'multi-maiven' ),
+        'priority' => 30,
+    ) );
+
+    $wp_customize->add_setting( 'header_ad_code', array(
+        'default'   => '',
+        'sanitize_callback' => 'wp_kses_post',
+    ) );
+    $wp_customize->add_control( 'header_ad_code', array(
+        'label'   => __( 'Ad Code for Header', 'multi-maiven' ),
+        'section' => 'header_ad_section',
+        'type'    => 'textarea',
+    ) );
+
+    $wp_customize->add_setting( 'footer_ad_code', array(
+        'default'   => '',
+        'sanitize_callback' => 'wp_kses_post',
+    ) );
+    $wp_customize->add_control( 'footer_ad_code', array(
+        'label'   => __( 'Ad Code for Footer', 'multi-maiven' ),
+        'section' => 'header_ad_section',
+        'type'    => 'textarea',
+    ) );
+}
+add_action( 'customize_register', 'mm_customize_advertising_register' );

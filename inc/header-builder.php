@@ -30,7 +30,6 @@ function mm_header_builder_customize_register($wp_customize) {
             'default'      => __('Default (Logo Left, Menu Right)', 'multi-maiven'),
             'centered'     => __('Centered Logo', 'multi-maiven'),
             'split'        => __('Split Menu', 'multi-maiven'),
-            'left_aligned' => __('Left Aligned (Logo and Menu Left)', 'multi-maiven'),
         ),
     ));
 
@@ -47,7 +46,6 @@ function mm_header_builder_customize_register($wp_customize) {
         'choices' => array(
             'left'   => __('Left', 'multi-maiven'),
             'center' => __('Center', 'multi-maiven'),
-            'right'  => __('Right', 'multi-maiven'),
         ),
     ));
 
@@ -112,60 +110,24 @@ function mm_header_builder_customize_register($wp_customize) {
         ),
     ));
 
-    // Header Elements
-    $wp_customize->add_setting('mm_header_elements', array(
-        'default'           => array('logo', 'menu'),
-        'sanitize_callback' => 'mm_sanitize_header_elements',
-    ));
-
-    $wp_customize->add_control(new MM_Sortable_Control($wp_customize, 'mm_header_elements', array(
-        'label'       => __('Header Elements', 'multi-maiven'),
-        'section'     => 'mm_header_builder',
-        'description' => __('Drag and drop to reorder header elements', 'multi-maiven'),
-        'choices'     => array(
-            'logo'     => __('Logo/Site Title', 'multi-maiven'),
-            'menu'     => __('Primary Menu', 'multi-maiven'),
-            'search'   => __('Search', 'multi-maiven'),
-            'button'   => __('Button', 'multi-maiven'),
-            'html'     => __('Custom HTML', 'multi-maiven'),
-        ),
-    )));
-
-    // Custom Button Text
-    $wp_customize->add_setting('mm_header_button_text', array(
-        'default'           => __('Contact Us', 'multi-maiven'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('mm_header_button_text', array(
-        'type'    => 'text',
-        'label'   => __('Button Text', 'multi-maiven'),
-        'section' => 'mm_header_builder',
-    ));
-
-    // Custom Button URL
-    $wp_customize->add_setting('mm_header_button_url', array(
-        'default'           => '#',
-        'sanitize_callback' => 'esc_url_raw',
-    ));
-
-    $wp_customize->add_control('mm_header_button_url', array(
-        'type'    => 'url',
-        'label'   => __('Button URL', 'multi-maiven'),
-        'section' => 'mm_header_builder',
-    ));
-
-    // Custom HTML
-    $wp_customize->add_setting('mm_header_html', array(
+    // Left Header Menu (for split layout)
+    $wp_customize->add_setting('mm_left_menu', array(
         'default'           => '',
-        'sanitize_callback' => 'wp_kses_post',
+        'sanitize_callback' => 'absint',
     ));
-
-    $wp_customize->add_control('mm_header_html', array(
-        'type'        => 'textarea',
-        'label'       => __('Custom HTML', 'multi-maiven'),
-        'section'     => 'mm_header_builder',
-        'description' => __('Add custom HTML to your header', 'multi-maiven'),
+    $menus = get_terms('nav_menu', array('hide_empty' => false));
+    $menu_choices = array('' => __('— Select —', 'multi-maiven'));
+    if (!empty($menus) && !is_wp_error($menus)) {
+        foreach ($menus as $menu) {
+            $menu_choices[$menu->term_id] = $menu->name;
+        }
+    }
+    $wp_customize->add_control('mm_left_menu', array(
+        'type'    => 'select',
+        'label'   => __('Left Header Menu (Split Layout)', 'multi-maiven'),
+        'section' => 'mm_header_builder',
+        'choices' => $menu_choices,
+        'description' => __('Select a menu to display on the left in split layout.', 'multi-maiven'),
     ));
 }
 add_action('customize_register', 'mm_header_builder_customize_register');
@@ -174,75 +136,18 @@ add_action('customize_register', 'mm_header_builder_customize_register');
  * Sanitization functions
  */
 function mm_sanitize_header_layout($input) {
-    $valid_layouts = array('default', 'centered', 'split', 'left_aligned');
+    $valid_layouts = array('default', 'centered', 'split');
     return in_array($input, $valid_layouts) ? $input : 'default';
 }
 
 function mm_sanitize_logo_position($input) {
-    $valid_positions = array('left', 'center', 'right');
+    $valid_positions = array('left', 'center');
     return in_array($input, $valid_positions) ? $input : 'left';
 }
 
 function mm_sanitize_menu_position($input) {
     $valid_positions = array('left', 'center', 'right');
     return in_array($input, $valid_positions) ? $input : 'right';
-}
-
-function mm_sanitize_header_elements($input) {
-    $valid_elements = array('logo', 'menu', 'search', 'button', 'html');
-
-    if (is_array($input)) {
-        return array_intersect($input, $valid_elements);
-    }
-
-    return array('logo', 'menu');
-}
-
-/**
- * Custom Sortable Control for Customizer
- */
-if (class_exists('WP_Customize_Control')) {
-    class MM_Sortable_Control extends WP_Customize_Control {
-        public $type = 'sortable';
-
-        public function render_content() {
-            if (empty($this->choices)) {
-                return;
-            }
-
-            $values = $this->value();
-            if (!is_array($values)) {
-                $values = array('logo', 'menu');
-            }
-
-            ?>
-            <span class="customize-control-title"><?php echo esc_html($this->label); ?></span>
-            <?php if (!empty($this->description)) : ?>
-                <span class="description customize-control-description"><?php echo esc_html($this->description); ?></span>
-            <?php endif; ?>
-
-            <div class="mm-sortable">
-                <ul class="mm-sortable-list">
-                    <?php foreach ($values as $value) : ?>
-                        <?php if (isset($this->choices[$value])) : ?>
-                            <li class="mm-sortable-item" data-value="<?php echo esc_attr($value); ?>">
-                                <?php echo esc_html($this->choices[$value]); ?>
-                            </li>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                    <?php foreach ($this->choices as $value => $label) : ?>
-                        <?php if (!in_array($value, $values)) : ?>
-                            <li class="mm-sortable-item" data-value="<?php echo esc_attr($value); ?>">
-                                <?php echo esc_html($label); ?>
-                            </li>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                </ul>
-                <input type="hidden" id="<?php echo esc_attr($this->id); ?>" name="<?php echo esc_attr($this->id); ?>" value="<?php echo esc_attr(implode(',', $values)); ?>" <?php $this->link(); ?> />
-            </div>
-            <?php
-        }
-    }
 }
 
 /**
@@ -286,11 +191,6 @@ function mm_header_elements() {
                 justify-content: center;
                 text-align: center;
             }
-            <?php elseif ($logo_position === 'right') : ?>
-            .site-branding {
-                justify-content: flex-end;
-                text-align: right;
-            }
             <?php endif; ?>
 
             <?php if ($menu_position === 'center') : ?>
@@ -329,59 +229,9 @@ function mm_header_elements() {
             }
             <?php elseif ($header_layout === 'split') : ?>
             /* Split menu layout - requires JavaScript to implement fully */
-            <?php elseif ($header_layout === 'left_aligned') : ?>
-            .header-container {
-                justify-content: flex-start;
-            }
-            .main-navigation {
-                margin-left: 2rem;
-            }
             <?php endif; ?>
         </style>
         <?php
-    });
-
-    // Output header elements in custom order
-    add_action('mm_header_inside_before', function() use ($elements) {
-        // Start custom header element container
-        echo '<div class="header-elements">';
-
-        foreach ($elements as $element) {
-            switch ($element) {
-                case 'logo':
-                    // Logo is already included in the default header.php template
-                    break;
-
-                case 'menu':
-                    // Menu is already included in the default header.php template
-                    break;
-
-                case 'search':
-                    echo '<div class="header-search">';
-                    get_search_form();
-                    echo '</div>';
-                    break;
-
-                case 'button':
-                    $button_text = get_theme_mod('mm_header_button_text', __('Contact Us', 'multi-maiven'));
-                    $button_url = get_theme_mod('mm_header_button_url', '#');
-                    echo '<div class="header-button">';
-                    echo '<a href="' . esc_url($button_url) . '" class="mm-button">' . esc_html($button_text) . '</a>';
-                    echo '</div>';
-                    break;
-
-                case 'html':
-                    $custom_html = get_theme_mod('mm_header_html', '');
-                    if (!empty($custom_html)) {
-                        echo '<div class="header-html">';
-                        echo wp_kses_post($custom_html);
-                        echo '</div>';
-                    }
-                    break;
-            }
-        }
-
-        echo '</div><!-- .header-elements -->';
     });
 }
 add_action('after_setup_theme', 'mm_header_elements');

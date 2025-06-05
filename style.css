@@ -121,17 +121,31 @@ a:hover, a:focus {
 	align-items: center;
 }
 
-.layout-default .header-container,
-.layout-left_aligned .header-container {
+.layout-default .header-container {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 }
 
 .layout-split .header-container {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.layout-split .main-navigation-left {
+    flex: 1 1 0;
+    justify-content: flex-start;
+    display: flex;
+}
+.layout-split .main-navigation-right {
+    flex: 1 1 0;
+    justify-content: flex-end;
+    display: flex;
+}
+.layout-split .site-branding {
+    flex: 0 0 auto;
+    margin: 0 auto;
+    text-align: center;
 }
 
 /* Logo Position */
@@ -348,6 +362,90 @@ select:focus {
     outline: none;
     border-color: var(--mm-color-primary);
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+/* Ad Container */
+.mm-ad-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.mm-ad-desktop {
+    display: block;
+}
+.mm-ad-mobile {
+    display: none;
+}
+@media (max-width: 768px) {
+    .mm-ad-desktop {
+        display: none;
+    }
+    .mm-ad-mobile {
+        display: block;
+    }
+    .mm-ad-container {
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Responsive Header Ad */
+.responsive-header-ad {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    text-align: center;
+    margin: 10px auto;
+}
+.responsive-header-ad ins {
+    display: block;
+    margin: 0 auto;
+}
+.responsive-header-ad .ad-desktop {
+    display: none;
+}
+.responsive-header-ad .ad-mobile {
+    display: block;
+}
+@media (min-width: 970px) {
+    .responsive-header-ad .ad-desktop {
+        display: block;
+    }
+    .responsive-header-ad .ad-mobile {
+        display: none;
+    }
+}
+
+/* Responsive Footer Ad */
+.responsive-footer-ad {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    text-align: center;
+    margin: 10px auto;
+}
+.responsive-footer-ad ins {
+    display: block;
+    margin: 0 auto;
+}
+.responsive-footer-ad .ad-desktop {
+    display: none;
+}
+.responsive-footer-ad .ad-mobile {
+    display: block;
+}
+@media (min-width: 970px) {
+    .responsive-footer-ad .ad-desktop {
+        display: block;
+    }
+    .responsive-footer-ad .ad-mobile {
+        display: none;
+    }
 }
 
 /* Responsive Design */

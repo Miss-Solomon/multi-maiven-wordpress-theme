@@ -12,6 +12,17 @@
     <footer id="colophon" class="site-footer">
         <?php do_action('mm_footer_inside_before'); ?>
         
+        <?php if ( get_theme_mod( 'footer_ad_code' ) ) : ?>
+            <div class="responsive-footer-ad responsive-header-ad">
+                <div class="ad-desktop">
+                    <?php echo get_theme_mod( 'footer_ad_code' ); ?>
+                </div>
+                <div class="ad-mobile">
+                    <?php echo get_theme_mod( 'footer_ad_code' ); ?>
+                </div>
+            </div>
+        <?php endif; ?>
+        
         <div class="footer-content mm-container">
             <div class="site-info">
                 <a href="<?php echo esc_url(__('https://wordpress.org/', 'multi-maiven')); ?>">

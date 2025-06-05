@@ -155,10 +155,6 @@
                     headerContainer.css('flex-direction', 'column');
                     siteBranding.css('margin-bottom', '1rem');
                     break;
-                case 'left_aligned':
-                    headerContainer.css('justify-content', 'flex-start');
-                    mainNavigation.css('margin-left', '2rem');
-                    break;
             }
         });
     });
@@ -175,11 +171,6 @@
                 siteBranding.css({
                     'justify-content': 'center',
                     'text-align': 'center'
-                });
-            } else if (to === 'right') {
-                siteBranding.css({
-                    'justify-content': 'flex-end',
-                    'text-align': 'right'
                 });
             }
         });
