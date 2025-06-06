@@ -124,11 +124,17 @@
             }
         }
 
-        // Real-time preview for header padding
-        $('input[data-customize-setting-link="mm_header_padding"]').on('input', function() {
+        // Live preview for top of header padding
+        $('input[data-customize-setting-link="mm_header_padding_top"]').on('input', function() {
             const value = $(this).val();
             updatePreviewCSS('.header-container', {
-                'padding-top': value + 'px',
+                'padding-top': value + 'px'
+            });
+        });
+        // Live preview for bottom of header padding
+        $('input[data-customize-setting-link="mm_header_padding_bottom"]').on('input', function() {
+            const value = $(this).val();
+            updatePreviewCSS('.header-container', {
                 'padding-bottom': value + 'px'
             });
         });

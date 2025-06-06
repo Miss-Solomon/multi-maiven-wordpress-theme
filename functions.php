@@ -163,6 +163,12 @@ function mm_scripts() {
 }
 add_action('wp_enqueue_scripts', 'mm_scripts');
 
+// Enqueue Font Awesome Free
+function mm_enqueue_fontawesome() {
+    wp_enqueue_style('fontawesome-free', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+}
+add_action('wp_enqueue_scripts', 'mm_enqueue_fontawesome');
+
 /**
  * Load Jetpack compatibility file.
  */
@@ -361,3 +367,67 @@ function mm_customize_advertising_register( $wp_customize ) {
     ) );
 }
 add_action( 'customize_register', 'mm_customize_advertising_register' );
+
+// Top Bar Shortcodes
+function mm_topbar_login_link() {
+    if (is_user_logged_in()) {
+        return '<a href="' . esc_url(wp_logout_url(home_url())) . '"><i class="fas fa-sign-out-alt"></i> Log Out</a>';
+    } else {
+        return '<a href="' . esc_url(wp_login_url()) . '"><i class="fas fa-sign-in-alt"></i> Log In</a>';
+    }
+}
+add_shortcode('login_link', 'mm_topbar_login_link');
+
+function mm_logged_in_only($atts, $content = null) {
+    return is_user_logged_in() ? do_shortcode($content) : '';
+}
+add_shortcode('if_logged_in', 'mm_logged_in_only');
+
+function mm_logged_out_only($atts, $content = null) {
+    return !is_user_logged_in() ? do_shortcode($content) : '';
+}
+add_shortcode('if_logged_out', 'mm_logged_out_only');
+
+add_action('admin_menu', function() {
+    global $submenu;
+    if (!empty($submenu['themes.php'])) {
+        foreach ($submenu['themes.php'] as $index => $item) {
+            // Check if the menu label is "Header"
+            if (isset($item[0]) && strtolower(trim(strip_tags($item[0]))) === 'header') {
+                unset($submenu['themes.php'][$index]);
+            }
+        }
+        // Re-index the array to avoid menu gaps
+        $submenu['themes.php'] = array_values($submenu['themes.php']);
+    }
+}, PHP_INT_MAX);
+
+// Link Color Customizer Settings
+function mm_customize_register( $wp_customize ) {
+    // Link Color
+    $wp_customize->add_setting('mm_link_color', array(
+        'default'           => '#2563eb', // Set your default
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mm_link_color', array(
+        'label'    => __('Link Color', 'multi-maiven'),
+        'section'  => 'colors',
+        'settings' => 'mm_link_color',
+    )));
+
+    // Link Hover Color
+    $wp_customize->add_setting('mm_link_hover_color', array(
+        'default'           => '#1e40af', // Set your default
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mm_link_hover_color', array(
+        'label'    => __('Link Hover Color', 'multi-maiven'),
+        'section'  => 'colors',
+        'settings' => 'mm_link_hover_color',
+    )));
+}
+add_action( 'customize_register', 'mm_customize_register' );

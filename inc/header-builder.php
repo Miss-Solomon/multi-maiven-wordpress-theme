@@ -15,12 +15,125 @@ function mm_header_builder_customize_register($wp_customize) {
         'priority' => 46,
     ));
 
-    // Header Layout
+    // 1. Sticky Header checkbox
+    $wp_customize->add_setting('mm_sticky_header', array(
+        'default'           => false,
+        'sanitize_callback' => 'mm_sanitize_checkbox',
+        'transport'         => 'postMessage',
+    ));
+    $wp_customize->add_control('mm_sticky_header', array(
+        'type'    => 'checkbox',
+        'label'   => __('Enable Sticky Header', 'multi-maiven'),
+        'section' => 'mm_header_builder',
+    ));
+
+    // 2. Enable Top Header checkbox
+    $wp_customize->add_setting('show_top_bar', [
+        'default' => true,
+        'transport' => 'refresh',
+    ]);
+    $wp_customize->add_control('show_top_bar', [
+        'label' => __('Enable Top Header', 'multi-maiven'),
+        'section' => 'mm_header_builder',
+        'type' => 'checkbox',
+    ]);
+
+    // 3. Only show to logged-in users checkbox
+    $wp_customize->add_setting('top_bar_logged_in_only', [
+        'default' => false,
+        'transport' => 'refresh',
+    ]);
+    $wp_customize->add_control('top_bar_logged_in_only', [
+        'label' => __('Only show Top Header to logged-in users', 'multi-maiven'),
+        'section' => 'mm_header_builder',
+        'type' => 'checkbox',
+    ]);
+
+    // 4. Reverse Left/Right Layout checkbox
+    $wp_customize->add_setting('top_bar_reverse_layout', [
+        'default' => false,
+        'transport' => 'refresh',
+    ]);
+    $wp_customize->add_control('top_bar_reverse_layout', [
+        'label' => __('Reverse Left/Right Layout', 'multi-maiven'),
+        'section' => 'mm_header_builder',
+        'type' => 'checkbox',
+    ]);
+
+    // 5. Top Header Bar Background Color
+    $wp_customize->add_setting('top_bar_bg_color', [
+        'default' => '#f9f9f9',
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport' => 'refresh',
+    ]);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'top_bar_bg_color', [
+        'label' => __('Top Header Bar Background Color', 'multi-maiven'),
+        'section' => 'mm_header_builder',
+    ]));
+
+    // 6. Top Header Bar Text Color
+    $wp_customize->add_setting('top_bar_text_color', [
+        'default' => '#333333',
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport' => 'refresh',
+    ]);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'top_bar_text_color', [
+        'label' => __('Top Header Bar Text Color', 'multi-maiven'),
+        'section' => 'mm_header_builder',
+    ]));
+
+    // 7. Left Content (e.g. Social Icons)
+    $wp_customize->add_setting('top_bar_left', ['default' => '', 'sanitize_callback' => 'wp_kses_post']);
+    $wp_customize->add_control('top_bar_left', [
+        'label' => __('Left Content (e.g. Social Icons)', 'multi-maiven'),
+        'section' => 'mm_header_builder',
+        'type' => 'textarea',
+    ]);
+
+    // 8. Center Content (e.g. Promo)
+    $wp_customize->add_setting('top_bar_center', ['default' => '', 'sanitize_callback' => 'wp_kses_post']);
+    $wp_customize->add_control('top_bar_center', [
+        'label' => __('Center Content (e.g. Promo)', 'multi-maiven'),
+        'section' => 'mm_header_builder',
+        'type' => 'textarea',
+    ]);
+
+    // 9. Right Content (e.g. Login)
+    $wp_customize->add_setting('top_bar_right', ['default' => '', 'sanitize_callback' => 'wp_kses_post']);
+    $wp_customize->add_control('top_bar_right', [
+        'label' => __('Right Content (e.g. Login)', 'multi-maiven'),
+        'section' => 'mm_header_builder',
+        'type' => 'textarea',
+    ]);
+
+    // 10. Header Background Color
+    $wp_customize->add_setting('mm_header_bg_color', array(
+        'default'           => '#ffffff',
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport'         => 'postMessage',
+    ));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mm_header_bg_color', array(
+        'label'    => __('Header Background Color', 'multi-maiven'),
+        'section'  => 'mm_header_builder',
+        'settings' => 'mm_header_bg_color',
+    )));
+
+    // 11. Header Image
+    $wp_customize->add_setting('header_image', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'header_image', array(
+        'label'    => __('Header Image', 'multi-maiven'),
+        'section'  => 'mm_header_builder',
+        'settings' => 'header_image',
+    )));
+
+    // 12. Header Layout
     $wp_customize->add_setting('mm_header_layout', array(
         'default'           => 'default',
         'sanitize_callback' => 'mm_sanitize_header_layout',
     ));
-
     $wp_customize->add_control('mm_header_layout', array(
         'type'        => 'select',
         'label'       => __('Header Layout', 'multi-maiven'),
@@ -33,12 +146,11 @@ function mm_header_builder_customize_register($wp_customize) {
         ),
     ));
 
-    // Logo Position
+    // 13. Logo Position
     $wp_customize->add_setting('mm_logo_position', array(
         'default'           => 'left',
         'sanitize_callback' => 'mm_sanitize_logo_position',
     ));
-
     $wp_customize->add_control('mm_logo_position', array(
         'type'    => 'radio',
         'label'   => __('Logo Position', 'multi-maiven'),
@@ -49,16 +161,15 @@ function mm_header_builder_customize_register($wp_customize) {
         ),
     ));
 
-    // Header Padding
-    $wp_customize->add_setting('mm_header_padding', array(
+    // 14. Top of Header Padding (px)
+    $wp_customize->add_setting('mm_header_padding_top', array(
         'default'           => '20',
         'sanitize_callback' => 'absint',
         'transport'         => 'postMessage',
     ));
-
-    $wp_customize->add_control('mm_header_padding', array(
+    $wp_customize->add_control('mm_header_padding_top', array(
         'type'        => 'range',
-        'label'       => __('Header Padding (px)', 'multi-maiven'),
+        'label'       => __('Top of Header Padding (px)', 'multi-maiven'),
         'section'     => 'mm_header_builder',
         'input_attrs' => array(
             'min'  => 0,
@@ -67,25 +178,40 @@ function mm_header_builder_customize_register($wp_customize) {
         ),
     ));
 
-    // Header Border
+    // 14b. Bottom of Header Padding (px)
+    $wp_customize->add_setting('mm_header_padding_bottom', array(
+        'default'           => '20',
+        'sanitize_callback' => 'absint',
+        'transport'         => 'postMessage',
+    ));
+    $wp_customize->add_control('mm_header_padding_bottom', array(
+        'type'        => 'range',
+        'label'       => __('Bottom of Header Padding (px)', 'multi-maiven'),
+        'section'     => 'mm_header_builder',
+        'input_attrs' => array(
+            'min'  => 0,
+            'max'  => 50,
+            'step' => 5,
+        ),
+    ));
+
+    // 15. Show Header Border checkbox
     $wp_customize->add_setting('mm_header_border', array(
         'default'           => true,
         'sanitize_callback' => 'mm_sanitize_checkbox',
         'transport'         => 'postMessage',
     ));
-
     $wp_customize->add_control('mm_header_border', array(
         'type'    => 'checkbox',
         'label'   => __('Show Header Border', 'multi-maiven'),
         'section' => 'mm_header_builder',
     ));
 
-    // Transparent Header
+    // 16. Transparent Header on Front Page checkbox
     $wp_customize->add_setting('mm_transparent_header', array(
         'default'           => false,
         'sanitize_callback' => 'mm_sanitize_checkbox',
     ));
-
     $wp_customize->add_control('mm_transparent_header', array(
         'type'        => 'checkbox',
         'label'       => __('Transparent Header on Front Page', 'multi-maiven'),
@@ -93,12 +219,11 @@ function mm_header_builder_customize_register($wp_customize) {
         'description' => __('Make the header transparent on the front page', 'multi-maiven'),
     ));
 
-    // Menu Position
+    // 17. Menu Position
     $wp_customize->add_setting('mm_menu_position', array(
         'default'           => 'right',
         'sanitize_callback' => 'mm_sanitize_menu_position',
     ));
-
     $wp_customize->add_control('mm_menu_position', array(
         'type'    => 'radio',
         'label'   => __('Menu Position', 'multi-maiven'),
@@ -110,7 +235,7 @@ function mm_header_builder_customize_register($wp_customize) {
         ),
     ));
 
-    // Left Header Menu (for split layout)
+    // 18. Left Header Menu (Split Layout)
     $wp_customize->add_setting('mm_left_menu', array(
         'default'           => '',
         'sanitize_callback' => 'absint',
@@ -169,7 +294,8 @@ function mm_header_elements() {
     });
 
     // Apply header styles
-    $header_padding = get_theme_mod('mm_header_padding', '20');
+    $header_padding_top = get_theme_mod('mm_header_padding_top', '20');
+    $header_padding_bottom = get_theme_mod('mm_header_padding_bottom', '20');
     $header_border = get_theme_mod('mm_header_border', true);
     $transparent_header = get_theme_mod('mm_transparent_header', false);
 
@@ -177,12 +303,12 @@ function mm_header_elements() {
     $menu_position = get_theme_mod('mm_menu_position', 'right');
 
     // Add inline styles
-    add_action('wp_head', function() use ($header_padding, $header_border, $transparent_header, $logo_position, $menu_position) {
+    add_action('wp_head', function() use ($header_padding_top, $header_padding_bottom, $header_border, $transparent_header, $logo_position, $menu_position) {
         ?>
         <style type="text/css">
             .header-container {
-                padding-top: <?php echo esc_attr($header_padding); ?>px;
-                padding-bottom: <?php echo esc_attr($header_padding); ?>px;
+                padding-top: <?php echo esc_attr($header_padding_top); ?>px;
+                padding-bottom: <?php echo esc_attr($header_padding_bottom); ?>px;
                 border-bottom: <?php echo $header_border ? '1px solid var(--mm-color-border)' : 'none'; ?>;
             }
 

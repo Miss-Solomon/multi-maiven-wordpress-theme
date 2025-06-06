@@ -569,3 +569,50 @@ select:focus {
 }
 
 /* Remove any editor-only styles from this file. Editor-only styles should be in style-editor.css. */
+
+
+/* Top Header Bar Styles */
+.top-header-bar {
+  background: #f9f9f9;
+  font-size: 14px;
+  padding: 0.5em 0;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.top-header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1em;
+  flex-wrap: wrap;
+}
+
+.top-header-left,
+.top-header-center,
+.top-header-right {
+  flex: 1;
+  text-align: center;
+}
+
+.top-header-left {
+  text-align: left;
+}
+
+.top-header-right {
+  text-align: right;
+}
+
+/* Reversed Layout */
+.top-header-bar.reverse-layout .top-header-left {
+  text-align: right;
+}
+
+.top-header-bar.reverse-layout .top-header-right {
+  text-align: left;
+}
+
+.top-header-bar a {
+  color: #333;
+  text-decoration: none;
+  margin-right: 0.75em;
+}

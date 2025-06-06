@@ -160,49 +160,7 @@ function mm_customize_register($wp_customize) {
         ),
     ));
 
-    // Header Builder Section
-    $wp_customize->add_section('mm_header_builder', array(
-        'title'    => __('Header Builder', 'multi-maiven'),
-        'priority' => 45,
-    ));
-
-    // Sticky Header
-    $wp_customize->add_setting('mm_sticky_header', array(
-        'default'           => false,
-        'sanitize_callback' => 'mm_sanitize_checkbox',
-        'transport'         => 'postMessage',
-    ));
-
-    $wp_customize->add_control('mm_sticky_header', array(
-        'type'    => 'checkbox',
-        'label'   => __('Enable Sticky Header', 'multi-maiven'),
-        'section' => 'mm_header_builder',
-    ));
-
-    // Header Background Color
-    $wp_customize->add_setting('mm_header_bg_color', array(
-        'default'           => '#ffffff',
-        'sanitize_callback' => 'sanitize_hex_color',
-        'transport'         => 'postMessage',
-    ));
-
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mm_header_bg_color', array(
-        'label'    => __('Header Background Color', 'multi-maiven'),
-        'section'  => 'mm_header_builder',
-        'settings' => 'mm_header_bg_color',
-    )));
-
-    // Header Image
-    $wp_customize->add_setting('header_image', array(
-        'default'           => '',
-        'sanitize_callback' => 'esc_url_raw',
-    ));
-
-    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'header_image', array(
-        'label'    => __('Header Image', 'multi-maiven'),
-        'section'  => 'mm_header_builder',
-        'settings' => 'header_image',
-    )));
+    // Remove header controls from here, as they are now managed in header-builder.php
 }
 add_action('customize_register', 'mm_customize_register');
 

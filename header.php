@@ -22,6 +22,12 @@
 	<?php do_action('mm_header_before'); ?>
 
 	<?php
+	if ( get_theme_mod( 'show_top_bar', true ) ) {
+	    get_template_part( 'template-parts/header/header', 'top' );
+	}
+	?>
+
+	<?php
 		// Get Customizer Settings
 		$header_layout = get_theme_mod('mm_header_layout', 'default');
 		$logo_position = get_theme_mod('mm_logo_position', 'left');

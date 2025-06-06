@@ -104,10 +104,18 @@
         });
     });
 
-    wp.customize('mm_header_padding', function(value) {
+    // Top of Header Padding (px)
+    wp.customize('mm_header_padding_top', function(value) {
         value.bind(function(to) {
             $('.header-container').css({
-                'padding-top': to + 'px',
+                'padding-top': to + 'px'
+            });
+        });
+    });
+    // Bottom of Header Padding (px)
+    wp.customize('mm_header_padding_bottom', function(value) {
+        value.bind(function(to) {
+            $('.header-container').css({
                 'padding-bottom': to + 'px'
             });
         });
