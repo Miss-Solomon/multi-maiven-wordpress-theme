@@ -221,63 +221,65 @@
         });
 
         // Add custom CSS for sortable elements
-        $('<style>')
-            .prop('type', 'text/css')
-            .html(`
-                .mm-sortable-list {
-                    list-style: none;
-                    padding: 0;
-                    margin: 10px 0;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    background: #f9f9f9;
-                    min-height: 40px;
-                }
-                
-                .mm-sortable-item {
-                    padding: 10px 15px;
-                    background: #fff;
-                    border-bottom: 1px solid #eee;
-                    cursor: move;
-                    position: relative;
-                    transition: all 0.2s ease;
-                }
-                
-                .mm-sortable-item:last-child {
-                    border-bottom: none;
-                }
-                
-                .mm-sortable-item:hover,
-                .mm-item-hover {
-                    background: #f0f0f1;
-                    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-                }
-                
-                .mm-sortable-item:before {
-                    content: '⋮⋮';
-                    position: absolute;
-                    left: 5px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    color: #ccc;
-                    font-size: 12px;
-                    line-height: 1;
-                }
-                
-                .mm-sortable-placeholder {
-                    background: #f0f0f1 !important;
-                    border: 2px dashed #ccc !important;
-                    height: 40px !important;
-                    margin: 2px 0;
-                }
-                
-                .ui-sortable-helper {
-                    background: #fff !important;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
-                    transform: rotate(2deg);
-                }
-            `)
-            .appendTo('head');
+        const customCSS = `
+            .mm-sortable-list {
+                list-style: none;
+                padding: 0;
+                margin: 10px 0;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                background: #f9f9f9;
+                min-height: 40px;
+            }
+            
+            .mm-sortable-item {
+                padding: 10px 15px;
+                background: #fff;
+                border-bottom: 1px solid #eee;
+                cursor: move;
+                position: relative;
+                transition: all 0.2s ease;
+            }
+            
+            .mm-sortable-item:last-child {
+                border-bottom: none;
+            }
+            
+            .mm-sortable-item:hover,
+            .mm-item-hover {
+                background: #f0f0f1;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            
+            .mm-sortable-item:before {
+                content: '⋮⋮';
+                position: absolute;
+                left: 5px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #ccc;
+                font-size: 12px;
+                line-height: 1;
+            }
+            
+            .mm-sortable-placeholder {
+                background: #f0f0f1 !important;
+                border: 2px dashed #ccc !important;
+                height: 40px !important;
+                margin: 2px 0;
+            }
+            
+            .ui-sortable-helper {
+                background: #fff !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+                transform: rotate(2deg);
+            }
+        `;
+        
+        const styleElement = document.createElement('style');
+        styleElement.type = 'text/css';
+        styleElement.textContent = customCSS;
+        document.head.appendChild(styleElement);
 
         // Initialize tooltips for header builder elements
         $('.mm-sortable-item').attr('title', 'Drag to reorder');

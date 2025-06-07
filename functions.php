@@ -151,6 +151,9 @@ function mm_scripts() {
     wp_style_add_data('mm-style', 'rtl', 'replace');
 
     wp_enqueue_script('mm-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true);
+    
+    // Enqueue responsive ads script
+    wp_enqueue_script('mm-responsive-ads', get_template_directory_uri() . '/js/responsive-ads.js', array(), _S_VERSION, true);
 
     if (is_singular() && comments_open() && get_option('thread_comments')) {
         wp_enqueue_script('comment-reply');
@@ -195,6 +198,79 @@ require get_template_directory() . '/inc/theme-hooks.php';
  * Include header builder functionality.
  */
 require get_template_directory() . '/inc/header-builder.php';
+
+/**
+ * Include footer builder functionality.
+ */
+require get_template_directory() . '/inc/footer-builder.php';
+
+/**
+ * Reorder Customizer Sections
+ */
+function mm_reorder_customizer_sections($wp_customize) {
+    // Set priorities for sections in the order specified
+    // 1. Site Identity (already exists with default priority)
+    $wp_customize->get_section('title_tagline')->priority = 10;
+    
+    // 2. Homepage Settings
+    if ($wp_customize->get_section('static_front_page')) {
+        $wp_customize->get_section('static_front_page')->priority = 20;
+    }
+    
+    // 3. Header Builder
+    if ($wp_customize->get_section('mm_header_builder')) {
+        $wp_customize->get_section('mm_header_builder')->priority = 30;
+    }
+    
+    // 4. Footer Builder
+    if ($wp_customize->get_section('mm_footer_builder')) {
+        $wp_customize->get_section('mm_footer_builder')->priority = 40;
+    }
+    
+    // 5. Colors
+    if ($wp_customize->get_section('colors')) {
+        $wp_customize->get_section('colors')->priority = 50;
+    }
+    if ($wp_customize->get_section('mm_colors')) {
+        $wp_customize->get_section('mm_colors')->priority = 51;
+    }
+    
+    // 6. Typography
+    if ($wp_customize->get_section('mm_typography')) {
+        $wp_customize->get_section('mm_typography')->priority = 60;
+    }
+    
+    // 7. Background Image
+    if ($wp_customize->get_section('background_image')) {
+        $wp_customize->get_section('background_image')->priority = 70;
+    }
+    
+    // 8. Layout Options
+    if ($wp_customize->get_section('mm_layout')) {
+        $wp_customize->get_section('mm_layout')->priority = 80;
+    }
+    
+    // 9. Menus (already exists with default priority)
+    if ($wp_customize->get_panel('nav_menus')) {
+        $wp_customize->get_panel('nav_menus')->priority = 90;
+    }
+    
+    // 10. Widgets (already exists with default priority)
+    if ($wp_customize->get_panel('widgets')) {
+        $wp_customize->get_panel('widgets')->priority = 100;
+    }
+    
+    // 11. Advertisements
+    if ($wp_customize->get_section('header_ad_section')) {
+        $wp_customize->get_section('header_ad_section')->priority = 110;
+    }
+    
+    // 12. Additional CSS (already exists with default priority)
+    if ($wp_customize->get_section('custom_css')) {
+        $wp_customize->get_section('custom_css')->priority = 120;
+    }
+}
+add_action('customize_register', 'mm_reorder_customizer_sections', 999); // High priority to run after all sections are registered
 
 /**
  * Custom template tags for this theme.
@@ -271,28 +347,8 @@ function mm_optimize_wordpress() {
     remove_action('admin_print_scripts', 'print_emoji_detection_script');
     remove_action('admin_print_styles', 'print_emoji_styles');
     
-    // Remove query strings from static resources
-    function mm_remove_script_version($src) {
-        $parts = explode('?ver', $src);
-        return $parts[0];
-    }
-    add_filter('script_loader_src', 'mm_remove_script_version', 15, 1);
-    add_filter('style_loader_src', 'mm_remove_script_version', 15, 1);
-    
     // Remove WordPress version from RSS
     add_filter('the_generator', '__return_empty_string');
-    
-    // Remove WordPress version from scripts and styles
-    function mm_remove_wp_version_strings($src) {
-        global $wp_version;
-        parse_str(parse_url($src, PHP_URL_QUERY), $query);
-        if (!empty($query['ver']) && $query['ver'] === $wp_version) {
-            $src = remove_query_arg('ver', $src);
-        }
-        return $src;
-    }
-    add_filter('script_loader_src', 'mm_remove_wp_version_strings');
-    add_filter('style_loader_src', 'mm_remove_wp_version_strings');
 }
 add_action('init', 'mm_optimize_wordpress');
 
@@ -301,10 +357,16 @@ add_action('init', 'mm_optimize_wordpress');
  */
 function mm_add_preload_tags() {
     // Preload main stylesheet
-    echo '<link rel="preload" href="' . get_stylesheet_uri() . '" as="style" onload="this.onload=null;this.rel=\'stylesheet\'">';
+    printf(
+        '<link rel="preload" href="%s" as="style">',
+        esc_url(get_stylesheet_uri())
+    );
     
     // Preload navigation script
-    echo '<link rel="preload" href="' . get_template_directory_uri() . '/js/navigation.js" as="script">';
+    printf(
+        '<link rel="preload" href="%s" as="script">',
+        esc_url(get_template_directory_uri() . '/js/navigation.js')
+    );
 }
 add_action('wp_head', 'mm_add_preload_tags', 1);
 
@@ -346,27 +408,94 @@ function mm_customize_advertising_register( $wp_customize ) {
         'priority' => 30,
     ) );
 
-    $wp_customize->add_setting( 'header_ad_code', array(
+    // Header Ad Settings
+    $wp_customize->add_setting( 'header_ad_code_desktop', array(
         'default'   => '',
         'sanitize_callback' => 'wp_kses_post',
     ) );
-    $wp_customize->add_control( 'header_ad_code', array(
-        'label'   => __( 'Ad Code for Header', 'multi-maiven' ),
-        'section' => 'header_ad_section',
-        'type'    => 'textarea',
+    $wp_customize->add_control( 'header_ad_code_desktop', array(
+        'label'       => __( 'Header Ad Code (Desktop - 728x90)', 'multi-maiven' ),
+        'description' => __( 'Ad code for desktop devices (728x90 recommended)', 'multi-maiven' ),
+        'section'     => 'header_ad_section',
+        'type'        => 'textarea',
     ) );
 
-    $wp_customize->add_setting( 'footer_ad_code', array(
+    $wp_customize->add_setting( 'header_ad_code_mobile', array(
         'default'   => '',
         'sanitize_callback' => 'wp_kses_post',
     ) );
-    $wp_customize->add_control( 'footer_ad_code', array(
-        'label'   => __( 'Ad Code for Footer', 'multi-maiven' ),
-        'section' => 'header_ad_section',
-        'type'    => 'textarea',
+    $wp_customize->add_control( 'header_ad_code_mobile', array(
+        'label'       => __( 'Header Ad Code (Mobile - 320x100)', 'multi-maiven' ),
+        'description' => __( 'Ad code for mobile devices (320x100 recommended)', 'multi-maiven' ),
+        'section'     => 'header_ad_section',
+        'type'        => 'textarea',
+    ) );
+
+    // Footer Ad Settings
+    $wp_customize->add_setting( 'footer_ad_code_desktop', array(
+        'default'   => '',
+        'sanitize_callback' => 'wp_kses_post',
+    ) );
+    $wp_customize->add_control( 'footer_ad_code_desktop', array(
+        'label'       => __( 'Footer Ad Code (Desktop - 728x90)', 'multi-maiven' ),
+        'description' => __( 'Ad code for desktop devices (728x90 recommended)', 'multi-maiven' ),
+        'section'     => 'header_ad_section',
+        'type'        => 'textarea',
+    ) );
+
+    $wp_customize->add_setting( 'footer_ad_code_mobile', array(
+        'default'   => '',
+        'sanitize_callback' => 'wp_kses_post',
+    ) );
+    $wp_customize->add_control( 'footer_ad_code_mobile', array(
+        'label'       => __( 'Footer Ad Code (Mobile - 320x100)', 'multi-maiven' ),
+        'description' => __( 'Ad code for mobile devices (320x100 recommended)', 'multi-maiven' ),
+        'section'     => 'header_ad_section',
+        'type'        => 'textarea',
     ) );
 }
 add_action( 'customize_register', 'mm_customize_advertising_register' );
+
+/**
+ * Display responsive banner ads with different sizes for desktop and mobile
+ * 
+ * @param string $location The location of the ad (header or footer)
+ * @return void
+ */
+function mm_display_responsive_ad( $location = 'header' ) {
+    // Get ad codes for desktop and mobile
+    $desktop_ad = get_theme_mod( $location . '_ad_code_desktop', '' );
+    $mobile_ad = get_theme_mod( $location . '_ad_code_mobile', '' );
+    
+    // If no ads are set, return early (container won't be displayed)
+    if ( empty( $desktop_ad ) && empty( $mobile_ad ) ) {
+        return;
+    }
+    
+    // Container class
+    $container_class = 'responsive-' . $location . '-ad';
+    
+    // Start output buffer
+    ob_start();
+    ?>
+    <div class="<?php echo esc_attr( $container_class ); ?>">
+        <?php if ( ! empty( $desktop_ad ) ) : ?>
+            <div class="desktop-ad">
+                <?php echo wp_kses_post( $desktop_ad ); ?>
+            </div>
+        <?php endif; ?>
+        
+        <?php if ( ! empty( $mobile_ad ) ) : ?>
+            <div class="mobile-ad">
+                <?php echo wp_kses_post( $mobile_ad ); ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <?php
+    
+    // Return the output buffer
+    echo ob_get_clean();
+}
 
 // Top Bar Shortcodes
 function mm_topbar_login_link() {
@@ -403,7 +532,7 @@ add_action('admin_menu', function() {
 }, PHP_INT_MAX);
 
 // Link Color Customizer Settings
-function mm_customize_register( $wp_customize ) {
+function mm_customize_link_colors( $wp_customize ) {
     // Link Color
     $wp_customize->add_setting('mm_link_color', array(
         'default'           => '#2563eb', // Set your default
@@ -430,4 +559,4 @@ function mm_customize_register( $wp_customize ) {
         'settings' => 'mm_link_hover_color',
     )));
 }
-add_action( 'customize_register', 'mm_customize_register' );
+add_action( 'customize_register', 'mm_customize_link_colors' );

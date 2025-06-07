@@ -39,7 +39,7 @@
         });
     });
 
-    // Global Colors
+    // Colors
     wp.customize('mm_primary_color', function(value) {
         value.bind(function(to) {
             updateCSSProperty('--mm-color-primary', to);
@@ -55,6 +55,18 @@
     wp.customize('mm_text_color', function(value) {
         value.bind(function(to) {
             updateCSSProperty('--mm-color-text', to);
+        });
+    });
+    
+    wp.customize('mm_link_color', function(value) {
+        value.bind(function(to) {
+            updateCSSProperty('--mm-color-link', to);
+        });
+    });
+    
+    wp.customize('mm_link_hover_color', function(value) {
+        value.bind(function(to) {
+            updateCSSProperty('--mm-color-link-hover', to);
         });
     });
 
@@ -249,6 +261,8 @@
         });
     });
 
+    // Footer Options are handled in footer-builder.js
+
     // Communicate with customizer panel
     wp.customize.bind('ready', function() {
         // Focus on elements when customizer control is focused
@@ -257,7 +271,11 @@
                 'blogname': '.site-title a',
                 'blogdescription': '.site-description',
                 'mm_primary_color': '.mm-button, .wp-block-button__link',
+                'mm_link_color': 'a',
+                'mm_link_hover_color': 'a:hover',
                 'mm_header_bg_color': '.site-header',
+                'mm_footer_bg_color': '.site-footer',
+                'mm_copyright_text': '.site-info',
                 'custom_logo': '.custom-logo'
             };
             

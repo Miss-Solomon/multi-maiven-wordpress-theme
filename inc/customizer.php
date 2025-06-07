@@ -30,12 +30,6 @@ function mm_customize_register($wp_customize) {
         );
     }
 
-    // Add Global Colors Section
-    $wp_customize->add_section('mm_colors', array(
-        'title'    => __('Global Colors', 'multi-maiven'),
-        'priority' => 30,
-    ));
-
     // Primary Color
     $wp_customize->add_setting('mm_primary_color', array(
         'default'           => '#2563eb',
@@ -45,7 +39,7 @@ function mm_customize_register($wp_customize) {
 
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mm_primary_color', array(
         'label'    => __('Primary Color', 'multi-maiven'),
-        'section'  => 'mm_colors',
+        'section'  => 'colors',
         'settings' => 'mm_primary_color',
     )));
 
@@ -58,7 +52,7 @@ function mm_customize_register($wp_customize) {
 
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mm_secondary_color', array(
         'label'    => __('Secondary Color', 'multi-maiven'),
-        'section'  => 'mm_colors',
+        'section'  => 'colors',
         'settings' => 'mm_secondary_color',
     )));
 
@@ -71,8 +65,34 @@ function mm_customize_register($wp_customize) {
 
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mm_text_color', array(
         'label'    => __('Text Color', 'multi-maiven'),
-        'section'  => 'mm_colors',
+        'section'  => 'colors',
         'settings' => 'mm_text_color',
+    )));
+    
+    // Link Color
+    $wp_customize->add_setting('mm_link_color', array(
+        'default'           => '#2563eb',
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mm_link_color', array(
+        'label'    => __('Link Color', 'multi-maiven'),
+        'section'  => 'colors',
+        'settings' => 'mm_link_color',
+    )));
+    
+    // Link Hover Color
+    $wp_customize->add_setting('mm_link_hover_color', array(
+        'default'           => '#1d4ed8',
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mm_link_hover_color', array(
+        'label'    => __('Link Hover Color', 'multi-maiven'),
+        'section'  => 'colors',
+        'settings' => 'mm_link_hover_color',
     )));
 
     // Add Typography Section
@@ -199,7 +219,9 @@ function mm_sanitize_checkbox($checked) {
  * Binds JS handlers to make Theme Customizer preview reload changes asynchronously.
  */
 function mm_customize_preview_js() {
-    wp_enqueue_script('mm-customizer', get_template_directory_uri() . '/js/customizer.js', array('customize-preview'), _S_VERSION, true);
+    $theme = wp_get_theme();
+    $version = $theme->get('Version');
+    wp_enqueue_script('mm-customizer', get_template_directory_uri() . '/js/customizer.js', array('customize-preview'), $version, true);
 }
 add_action('customize_preview_init', 'mm_customize_preview_js');
 
@@ -210,9 +232,13 @@ function mm_customizer_css() {
     $primary_color = get_theme_mod('mm_primary_color', '#2563eb');
     $secondary_color = get_theme_mod('mm_secondary_color', '#64748b');
     $text_color = get_theme_mod('mm_text_color', '#1e293b');
+    $link_color = get_theme_mod('mm_link_color', '#2563eb');
+    $link_hover_color = get_theme_mod('mm_link_hover_color', '#1d4ed8');
     $font_size = get_theme_mod('mm_font_size', '16');
     $container_width = get_theme_mod('mm_container_width', '1200');
     $header_bg_color = get_theme_mod('mm_header_bg_color', '#ffffff');
+    $footer_bg_color = get_theme_mod('mm_footer_bg_color', '#f8fafc');
+    $footer_text_color = get_theme_mod('mm_footer_text_color', '#1e293b');
 
     $font_family_map = array(
         'system'    => '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -230,9 +256,13 @@ function mm_customizer_css() {
             --mm-color-primary: <?php echo esc_attr($primary_color); ?>;
             --mm-color-secondary: <?php echo esc_attr($secondary_color); ?>;
             --mm-color-text: <?php echo esc_attr($text_color); ?>;
+            --mm-color-link: <?php echo esc_attr($link_color); ?>;
+            --mm-color-link-hover: <?php echo esc_attr($link_hover_color); ?>;
             --mm-font-family-base: <?php echo esc_attr($font_family_css); ?>;
             --mm-font-size-base: <?php echo esc_attr($font_size); ?>px;
             --mm-container-width: <?php echo esc_attr($container_width); ?>px;
+            --mm-footer-bg-color: <?php echo esc_attr($footer_bg_color); ?>;
+            --mm-footer-text-color: <?php echo esc_attr($footer_text_color); ?>;
         }
         .site-header {
             background-color: <?php echo esc_attr($header_bg_color); ?>;

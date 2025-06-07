@@ -364,87 +364,60 @@ select:focus {
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
 }
 
-/* Ad Container */
-.mm-ad-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-.mm-ad-desktop {
-    display: block;
-}
-.mm-ad-mobile {
-    display: none;
-}
-@media (max-width: 768px) {
-    .mm-ad-desktop {
-        display: none;
-    }
-    .mm-ad-mobile {
-        display: block;
-    }
-    .mm-ad-container {
-        margin-bottom: 0.5rem;
-    }
-}
-
-/* Responsive Header Ad */
-.responsive-header-ad {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 1rem;
-    text-align: center;
-    margin: 10px auto;
-}
-.responsive-header-ad ins {
-    display: block;
-    margin: 0 auto;
-}
-.responsive-header-ad .ad-desktop {
-    display: none;
-}
-.responsive-header-ad .ad-mobile {
-    display: block;
-}
-@media (min-width: 970px) {
-    .responsive-header-ad .ad-desktop {
-        display: block;
-    }
-    .responsive-header-ad .ad-mobile {
-        display: none;
-    }
-}
-
-/* Responsive Footer Ad */
+/* Responsive Ads */
+.responsive-header-ad,
 .responsive-footer-ad {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 1rem;
     text-align: center;
-    margin: 10px auto;
+    margin: 10px auto 1rem;
+    overflow: hidden; /* Prevent content from overflowing */
 }
+
+.responsive-header-ad ins,
 .responsive-footer-ad ins {
     display: block;
     margin: 0 auto;
 }
-.responsive-footer-ad .ad-desktop {
-    display: none;
+
+/* Desktop ad (728x90) */
+.desktop-ad {
+    display: none; /* Hidden by default */
+    width: 100%;
+    max-width: 728px;
+    height: auto;
+    margin: 0 auto;
 }
-.responsive-footer-ad .ad-mobile {
-    display: block;
+
+/* Mobile ad (320x100) */
+.mobile-ad {
+    display: none; /* Hidden by default */
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    margin: 0 auto;
 }
-@media (min-width: 970px) {
-    .responsive-footer-ad .ad-desktop {
-        display: block;
+
+/* Media queries for responsive ads */
+@media (min-width: 728px) {
+    .desktop-ad {
+        display: block; /* Show on desktop */
     }
-    .responsive-footer-ad .ad-mobile {
-        display: none;
+    
+    .mobile-ad {
+        display: none; /* Hide on desktop */
+    }
+}
+
+@media (max-width: 727px) {
+    .desktop-ad {
+        display: none; /* Hide on mobile */
+    }
+    
+    .mobile-ad {
+        display: block; /* Show on mobile */
     }
 }
 

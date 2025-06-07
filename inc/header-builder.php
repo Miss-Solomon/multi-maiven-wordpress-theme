@@ -367,7 +367,9 @@ add_action('after_setup_theme', 'mm_header_elements');
  */
 function mm_header_builder_scripts() {
     if (is_customize_preview()) {
-        wp_enqueue_script('mm-header-builder', get_template_directory_uri() . '/js/header-builder.js', array('customize-preview', 'jquery', 'jquery-ui-sortable'), _S_VERSION, true);
+        $theme = wp_get_theme();
+        $version = $theme->get('Version');
+        wp_enqueue_script('mm-header-builder', get_template_directory_uri() . '/js/header-builder.js', array('customize-preview', 'jquery', 'jquery-ui-sortable'), $version, true);
     }
 }
 add_action('customize_preview_init', 'mm_header_builder_scripts');
