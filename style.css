@@ -296,15 +296,197 @@ a:hover, a:focus {
 .site-footer {
     background-color: var(--mm-color-text);
     color: #ffffff;
-    padding: 2rem 0 1rem;
+    padding: 2rem 0 0;
     margin-top: 3rem;
 }
 
-.footer-content {
+/* Bottom Footer Bar */
+.bottom-footer-bar {
+    background: #f9f9f9;
+    font-size: 14px;
+    padding: 1em 0;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    color: #333;
+    margin-top: 1rem;
+}
+
+.bottom-footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+    flex-wrap: wrap;
+}
+
+.bottom-footer-left,
+.bottom-footer-center,
+.bottom-footer-right {
+    flex: 1;
     text-align: center;
 }
 
-.site-info {
+.bottom-footer-left {
+    text-align: left;
+}
+
+.bottom-footer-right {
+    text-align: right;
+}
+
+/* Reversed Layout for Bottom Footer */
+.bottom-footer-bar.reverse-layout .bottom-footer-left {
+    text-align: right;
+}
+
+.bottom-footer-bar.reverse-layout .bottom-footer-right {
+    text-align: left;
+}
+
+/* Swap the content using flexbox direction */
+.bottom-footer-bar.reverse-layout .bottom-footer-inner {
+    flex-direction: row-reverse;
+}
+
+.bottom-footer-bar a {
+    color: inherit;
+    text-decoration: none;
+    margin-right: 0.75em;
+}
+
+/* Bottom Footer Menu */
+.bottom-footer-menu {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.bottom-footer-menu li {
+    display: inline-block;
+    margin-right: 1em;
+}
+
+.bottom-footer-menu a {
+    display: inline-block;
+    padding: 0.25em 0;
+}
+
+.bottom-footer-bar a:hover {
+    text-decoration: underline;
+}
+
+/* Footer Menus Container */
+.footer-menus-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-left-menu,
+.footer-right-menu {
+    flex: 1;
+    max-width: 200px;
+}
+
+.footer-ad-container {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Horizontal Footer Menu */
+.footer-navigation-horizontal ul,
+.footer-menu-horizontal {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.footer-navigation-horizontal li {
+    margin: 0 0.75em 0 0;
+}
+
+.footer-navigation-horizontal a {
+    text-decoration: none;
+    display: inline-block;
+    padding: 0.5em 0.75em 0.5em 0;
+    white-space: nowrap;
+}
+
+.footer-right-nav.footer-navigation-horizontal ul {
+    justify-content: flex-end;
+}
+
+.footer-right-nav.footer-navigation-horizontal li {
+    margin: 0 0 0 0.75em;
+}
+
+/* Vertical Footer Menu */
+.footer-navigation-vertical ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-navigation-vertical li {
+    margin-bottom: 0.75em;
+}
+
+.footer-navigation-vertical a {
+    text-decoration: none;
+    display: block;
+    padding: 0.25em 0;
+}
+
+/* Footer Menu Styling */
+.footer-navigation-horizontal a:hover,
+.footer-navigation-vertical a:hover {
+    text-decoration: underline;
+}
+
+.footer-left-nav {
+    text-align: left;
+}
+
+.footer-right-nav {
+    text-align: right;
+}
+
+/* Responsive Footer Menus */
+@media (max-width: 768px) {
+    .footer-menus-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .footer-left-menu,
+    .footer-right-menu {
+        max-width: 100%;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .footer-left-nav,
+    .footer-right-nav {
+        text-align: center;
+    }
+    
+    .footer-navigation-vertical ul {
+        align-items: center;
+    }
+}
+
+.bottom-footer-center {
     font-size: var(--mm-font-size-small);
     opacity: 0.8;
 }
@@ -582,6 +764,11 @@ select:focus {
 
 .top-header-bar.reverse-layout .top-header-right {
   text-align: left;
+}
+
+/* Swap the content using flexbox direction */
+.top-header-bar.reverse-layout .top-header-inner {
+  flex-direction: row-reverse;
 }
 
 .top-header-bar a {

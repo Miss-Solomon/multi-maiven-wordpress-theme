@@ -12,27 +12,27 @@
     <footer id="colophon" class="site-footer">
         <?php do_action('mm_footer_inside_before'); ?>
         
-        <?php 
-        // Display responsive footer ad
-        mm_display_responsive_ad( 'footer' );
-        ?>
-        
-        <div class="footer-content mm-container">
-            <div class="site-info">
-                <?php
-                // Display the copyright text from customizer or fallback to default
-                $copyright_text = get_theme_mod('mm_copyright_text', 
-                    sprintf(
-                        /* translators: %1$s: Theme name, %2$s: Theme author. */
-                        __('Proudly powered by WordPress | Theme: %1$s by %2$s.', 'multi-maiven'),
-                        'Multi Maiven',
-                        '<a href="#">Your Name</a>'
-                    )
-                );
-                echo wp_kses_post($copyright_text);
+        <div class="footer-menus-container mm-container">
+            <div class="footer-left-menu">
+                <?php mm_display_vertical_footer_menu('footer-left', '', 'footer-left-nav'); ?>
+            </div>
+            
+            <div class="footer-ad-container">
+                <?php 
+                // Display responsive footer ad
+                mm_display_responsive_ad( 'footer' );
                 ?>
-            </div><!-- .site-info -->
-        </div><!-- .footer-content -->
+            </div>
+            
+            <div class="footer-right-menu">
+                <?php mm_display_vertical_footer_menu('footer-right', '', 'footer-right-nav'); ?>
+            </div>
+        </div>
+        
+        <?php 
+        // Include the bottom footer bar
+        get_template_part('template-parts/footer/footer-bottom');
+        ?>
         
         <?php do_action('mm_footer_inside_after'); ?>
     </footer><!-- #colophon -->

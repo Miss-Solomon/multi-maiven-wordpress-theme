@@ -35,8 +35,9 @@ function mm_setup() {
     register_nav_menus(
         array(
             'menu-1' => esc_html__('Primary', 'multi-maiven'),
-            'footer-menu' => esc_html__('Footer Menu', 'multi-maiven'),
-            'header-left' => esc_html__('Header Left', 'multi-maiven'), // New left header menu
+            'footer-left' => esc_html__('Footer Left', 'multi-maiven'),
+            'footer-right' => esc_html__('Footer Right', 'multi-maiven'),
+            'header-left' => esc_html__('Header Left', 'multi-maiven'),
         )
     );
 
@@ -560,3 +561,55 @@ function mm_customize_link_colors( $wp_customize ) {
     )));
 }
 add_action( 'customize_register', 'mm_customize_link_colors' );
+
+/**
+ * Display a horizontal footer menu
+ * 
+ * @param string $theme_location The menu location to display
+ * @param string $menu_class Additional CSS classes for the menu
+ * @param string $container_class Additional CSS classes for the container
+ * @return void
+ */
+function mm_display_horizontal_footer_menu($theme_location = 'footer-left', $menu_class = '', $container_class = '') {
+    if (!has_nav_menu($theme_location)) {
+        return;
+    }
+    
+    $menu_class = 'footer-menu-horizontal ' . $menu_class;
+    $container_class = 'footer-navigation-horizontal ' . $container_class;
+    
+    wp_nav_menu(array(
+        'theme_location' => $theme_location,
+        'menu_class'     => $menu_class,
+        'container'      => 'nav',
+        'container_class' => $container_class,
+        'depth'          => 1,
+        'fallback_cb'    => false,
+    ));
+}
+
+/**
+ * Display a vertical footer menu
+ * 
+ * @param string $theme_location The menu location to display
+ * @param string $menu_class Additional CSS classes for the menu
+ * @param string $container_class Additional CSS classes for the container
+ * @return void
+ */
+function mm_display_vertical_footer_menu($theme_location = 'footer-left', $menu_class = '', $container_class = '') {
+    if (!has_nav_menu($theme_location)) {
+        return;
+    }
+    
+    $menu_class = 'footer-menu-vertical ' . $menu_class;
+    $container_class = 'footer-navigation-vertical ' . $container_class;
+    
+    wp_nav_menu(array(
+        'theme_location' => $theme_location,
+        'menu_class'     => $menu_class,
+        'container'      => 'nav',
+        'container_class' => $container_class,
+        'depth'          => 1,
+        'fallback_cb'    => false,
+    ));
+}

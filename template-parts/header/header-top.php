@@ -12,12 +12,8 @@ $top_right  = do_shortcode(get_theme_mod('top_bar_right', ''));
 $top_bar_bg_color = get_theme_mod('top_bar_bg_color', '#f9f9f9');
 $top_bar_text_color = get_theme_mod('top_bar_text_color', '#333333');
 
-// Swap content variables if reverse is enabled
-if ($reverse) {
-    $tmp = $top_left;
-    $top_left = $top_right;
-    $top_right = $tmp;
-}
+// Content variables are no longer swapped here
+// The reverse layout is handled by CSS using the flexbox order property
 ?>
 <?php if ($top_bar_bg_color || $top_bar_text_color): ?>
 <style type="text/css">
